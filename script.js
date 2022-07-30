@@ -26,3 +26,16 @@ function operate(operator, num1, num2) {
     }
 }
 
+const digits = document.querySelectorAll('.digit');
+let display = document.getElementById('display');
+digits.forEach(item => {
+    item.addEventListener('click', (e) => {
+        display.value += e.target.id;
+        let storer = display.value;
+        console.log(storer);
+    })
+})
+
+
+
+// let x = document.getElementById("display").value;

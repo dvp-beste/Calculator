@@ -18,7 +18,7 @@ button{
     padding: 4px;
     font-size: 24px;
     flex-wrap: nowrap;
-    border: solid white 2px;
+    /* border: solid white 2px; */
 }
 form {
     margin: 8px;
