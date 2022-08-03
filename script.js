@@ -43,53 +43,85 @@ clearer.addEventListener('click', () => {
     display.value = '0';
     upperDisplay.value = '';
     decimal.disabled = false;
+    operators.forEach(i => {
+        i.classList.remove('operator-highlight');
+    })
+    digits.forEach(i => {
+        i.classList.remove('digit-highlight');
+    })
 })
 
 digits.forEach(item => {
-    item.addEventListener('click', (e) => {
-        if(storer.operator === '=') {
-            storer = {number1: '0' , number2: '0', operator:''};
-        }
-        if(!storer.operator) {
-            storer.number1 += e.target.id;
-            display.value = parseFloat(storer.number1);
-        } else {
-            storer.number2 += e.target.id;
-            display.value = parseFloat(storer.number2);
-        }
-    })
+    item.addEventListener('click', getNumbers);
 })
 
+function getNumbers(e) {
+    highlightDigit(e);
+    if(!storer.operator) {
+        storer.number1 += e.target.id;
+        display.value = parseFloat(storer.number1);
+        decimal.disabled = storer.number1.includes('.') ? true: false;
+    } else {
+        storer.number2 += e.target.id;
+        display.value = parseFloat(storer.number2);
+        decimal.disabled = storer.number2.includes('.') ? true: false;
+    }
+}
 
+function highlightDigit(e){
+    e.target.classList.add('digit-highlight');
+    digits.forEach(i => {
+        if (e.target.id !== i.id) {
+            i.classList.remove('digit-highlight');
+        }
+    })
+}
 
 operators.forEach(item => {
-    item.addEventListener('click', (e) => {
-        decimal.disabled = false;
-        if(Object.values(storer).every(item => item)){
-            if(storer.operator === '='){
-                upperDisplay.value = parseFloat(storer.number1) + ' '+e.target.id;
-            } else{
-                upperDisplay.value = parseFloat(storer.number1) + ' ' + storer.operator +' '+ parseFloat(storer.number2) + ' ' + '=';
-                storer.number1 = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
-            }
-            storer.operator = e.target.id;
-            storer.number2 = '0';
-            if(storer.operator !== '='){
-                upperDisplay.value = parseFloat(storer.number1) +' '+ storer.operator;
-            }
+    item.addEventListener('click', getResult)
+})
+
+function getResult(e) {
+    hightlightOperator(e);
+    decimal.disabled = false;
+    if(Object.values(storer).every(item => item)){
+        if(storer.operator === '='){
+            upperDisplay.value = parseFloat(storer.number1) + ' '+e.target.id;
+        } else{
+            upperDisplay.value = parseFloat(storer.number1) + ' ' + storer.operator +' '+ parseFloat(storer.number2) + ' ' + '=';
+            storer.number1 = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
+        }
+        storer.operator = e.target.id;
+        storer.number2 = '0';
+        if(storer.operator !== '='){
+            upperDisplay.value = parseFloat(storer.number1) +' '+ storer.operator;
+        }
+        display.value = parseFloat(storer.number1);
+    } else if(storer.number1){
+        storer.operator = e.target.id;
+        upperDisplay.value = display.value +' '+ storer.operator;
+        if(storer.operator === '=') {
             display.value = parseFloat(storer.number1);
-        } else if(storer.number1){
-            storer.operator = e.target.id;
-            upperDisplay.value = display.value +' '+ storer.operator;
-            if(storer.operator === '=') {
-                display.value = parseFloat(storer.number1);
-            } else {
-                display.value = '0';
-            }
-            
+        } else {
+            display.value = '0';
+        }
+    }
+}
+
+function hightlightOperator(e){
+    digits.forEach(i => {
+        i.classList.remove('digit-highlight');
+    })
+    e.target.classList.add('operator-highlight');
+    operators.forEach(i => {
+        if (e.target.id !== i.id) {
+            i.classList.remove('operator-highlight');
         }
     })
-})
+}
+    
+    
+
 
 
 
