@@ -11,8 +11,8 @@ function multiply(a, b) {
 };
 
 function divide(a, b) {
-    if(b === "0") {
-        return ":P";
+    if(b == "0") {
+        return "Who r u 2 divide by 0!";
     }
     return a / b;
 }
@@ -37,6 +37,7 @@ const clearer = document.getElementById('C');
 const decimal = document.getElementById('.');
 let storer = {number1: '0' , number2: '0', operator:''};
 display.value = '0';
+
 
 clearer.addEventListener('click', () => {
     storer = {number1: '0' , number2: '0', operator:''};
@@ -68,6 +69,39 @@ function getNumbers(e) {
     }
 }
 
+operators.forEach(item => {
+    item.addEventListener('click', (e) => {
+        hightlightOperator(e);
+        decimal.disabled = false;
+        if(storer.operator === ''){
+            storer.operator = e.target.id;
+            upperDisplay.value = display.value +' '+ storer.operator;
+            if(storer.operator === '=') {
+                display.value = parseFloat(storer.number1);
+            } else {
+                display.value = '0';
+            }
+        } else {
+            getResult(e);
+        }
+    })
+})
+
+function getResult(e) {
+    if (storer.operator === '='){
+        upperDisplay.value = parseFloat(storer.number1) + ' '+e.target.id;
+    } else if (e.target.id === '=') {
+        upperDisplay.value = parseFloat(storer.number1) + ' ' + storer.operator +' '+ parseFloat(storer.number2) + ' ' + '=';
+        storer.number1 = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
+    } else {
+        storer.number1 = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
+        upperDisplay.value = parseFloat(storer.number1) +' '+ e.target.id;
+    }
+    display.value = storer.number1;
+    storer.operator = e.target.id;
+    storer.number2 = '0';
+}
+
 function highlightDigit(e){
     e.target.classList.add('digit-highlight');
     digits.forEach(i => {
@@ -75,37 +109,6 @@ function highlightDigit(e){
             i.classList.remove('digit-highlight');
         }
     })
-}
-
-operators.forEach(item => {
-    item.addEventListener('click', getResult)
-})
-
-function getResult(e) {
-    hightlightOperator(e);
-    decimal.disabled = false;
-    if(Object.values(storer).every(item => item)){
-        if(storer.operator === '='){
-            upperDisplay.value = parseFloat(storer.number1) + ' '+e.target.id;
-        } else{
-            upperDisplay.value = parseFloat(storer.number1) + ' ' + storer.operator +' '+ parseFloat(storer.number2) + ' ' + '=';
-            storer.number1 = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
-        }
-        storer.operator = e.target.id;
-        storer.number2 = '0';
-        if(storer.operator !== '='){
-            upperDisplay.value = parseFloat(storer.number1) +' '+ storer.operator;
-        }
-        display.value = parseFloat(storer.number1);
-    } else if(storer.number1){
-        storer.operator = e.target.id;
-        upperDisplay.value = display.value +' '+ storer.operator;
-        if(storer.operator === '=') {
-            display.value = parseFloat(storer.number1);
-        } else {
-            display.value = '0';
-        }
-    }
 }
 
 function hightlightOperator(e){
