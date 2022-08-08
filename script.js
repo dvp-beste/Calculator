@@ -35,9 +35,37 @@ const display = document.getElementById('display');
 const upperDisplay = document.getElementById('upper-display');
 const clearer = document.getElementById('C');
 const decimal = document.getElementById('.');
+const deleter = document.getElementById('delete');
 let storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
 display.value = '0';
 
+// Clicking Delete button
+deleter.addEventListener('click', backSpace);
+
+function backSpace() {
+    
+    if (!upperDisplay.value) {  
+        display.value = display.value.slice(0, -1); 
+        if(display.value.length == 0) {
+            display.value = '0';
+            storer.number1 = '';
+        } else {
+            storer.number1 = display.value;
+        }
+        
+    } else if (upperDisplay.value && upperDisplay.value.includes('=')) {
+        upperDisplay.value = '';
+        storer.number1 = display.value;
+    } else {
+        display.value = display.value.slice(0, -1);
+        if(display.value.length == 0) {
+            display.value = '0';
+            storer.number2 = '';
+        } else {
+            storer.number2 = display.value;
+        }
+    }
+}
 
 // Clicking 'C' and clearing all
 clearer.addEventListener('click', () => {
@@ -68,11 +96,15 @@ function getNumbers(e) {
     operators.forEach(i => {
         i.disabled = false;
     })
+    // if a number is clicked after a calculation it should be stored in storer.number1
     if (storer.lastClicked != '' && storer.lastClicked.contains('operator')) {
         if (!storer.operator) {
             storer.number1 = '';
-        } 
-        display.value = '0';
+        // if delete is clicked after an operator the display should not be 0. 
+        } else if (!storer.number2) { 
+            display.value = '0';
+        }
+        
     }
 
     if (!storer.operator) {
