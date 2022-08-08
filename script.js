@@ -12,7 +12,7 @@ function multiply(a, b) {
 
 function divide(a, b) {
     if(b == "0") {
-        return "Who r u 2 divide by 0!";
+        return "Who r u to divide by 0!?";
     }
     return a / b;
 }
@@ -35,15 +35,19 @@ const display = document.getElementById('display');
 const upperDisplay = document.getElementById('upper-display');
 const clearer = document.getElementById('C');
 const decimal = document.getElementById('.');
-let storer = {number1: '0' , number2: '0', operator:''};
+let storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
 display.value = '0';
 
 
+// Clicking 'C' and clearing all
 clearer.addEventListener('click', () => {
-    storer = {number1: '0' , number2: '0', operator:''};
+    storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
     display.value = '0';
     upperDisplay.value = '';
     decimal.disabled = false;
+    operators.forEach(i => {
+        i.disabled = false;
+    })
     operators.forEach(i => {
         i.classList.remove('operator-highlight');
     })
@@ -52,55 +56,97 @@ clearer.addEventListener('click', () => {
     })
 })
 
+// Event listener for digits, including decimal
+
 digits.forEach(item => {
     item.addEventListener('click', getNumbers);
 })
 
 function getNumbers(e) {
+    
     highlightDigit(e);
-    if(!storer.operator) {
-        storer.number1 += e.target.id;
-        display.value = parseFloat(storer.number1);
-        decimal.disabled = storer.number1.includes('.') ? true: false;
-    } else {
-        storer.number2 += e.target.id;
-        display.value = parseFloat(storer.number2);
-        decimal.disabled = storer.number2.includes('.') ? true: false;
+    operators.forEach(i => {
+        i.disabled = false;
+    })
+    if (storer.lastClicked != '' && storer.lastClicked.contains('operator')) {
+        if (!storer.operator) {
+            storer.number1 = '';
+        } 
+        display.value = '0';
     }
+
+    if (!storer.operator) {
+        if (!storer.number1 && e.target.id != '.') {
+        display.value = e.target.id;
+        } else {
+        display.value += e.target.id;
+        }
+        storer.number1 = display.value;
+    } else {
+        if (!storer.number2 && e.target.id != '.') {
+        display.value = e.target.id;
+        } else {
+        display.value += e.target.id;
+        }
+        storer.number2 = display.value;
+    }
+    
+
+    decimal.disabled = display.value.includes('.') ? true: false;
+    storer.lastClicked = e.target.classList;
 }
 
+
+// Event listener for operators
 operators.forEach(item => {
     item.addEventListener('click', (e) => {
-        hightlightOperator(e);
+        highlightOperator(e);
         decimal.disabled = false;
-        if(storer.operator === ''){
+        while (parseFloat(display.value) == parseFloat(display.value.slice(0, -1))) {
+            display.value = display.value.slice(0, -1);
+        } 
+        // Check if storer.operator is empty OR two operators that are not '=' are clicked successively. If not call getResult
+        if (!storer.operator || (storer.lastClicked.contains('operator') && e.target.id != '=')) {
+            upperDisplay.value = display.value +' '+ e.target.id;
             storer.operator = e.target.id;
-            upperDisplay.value = display.value +' '+ storer.operator;
-            if(storer.operator === '=') {
-                display.value = parseFloat(storer.number1);
-            } else {
-                display.value = '0';
-            }
         } else {
             getResult(e);
         }
+        storer.lastClicked = e.target.classList;
     })
 })
 
+
 function getResult(e) {
-    if (storer.operator === '='){
-        upperDisplay.value = parseFloat(storer.number1) + ' '+e.target.id;
-    } else if (e.target.id === '=') {
-        upperDisplay.value = parseFloat(storer.number1) + ' ' + storer.operator +' '+ parseFloat(storer.number2) + ' ' + '=';
-        storer.number1 = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
-    } else {
-        storer.number1 = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
-        upperDisplay.value = parseFloat(storer.number1) +' '+ e.target.id;
+    
+    if (!storer.number2) {
+        storer.number2 = display.value;
     }
-    display.value = storer.number1;
-    storer.operator = e.target.id;
-    storer.number2 = '0';
+
+    storer.result = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
+    if (isNaN(storer.result)) {
+        upperDisplay.value = '';
+        display.value = storer.result;
+        storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
+        operators.forEach(i => {
+            i.disabled = true;
+        })
+    } else {
+        if (e.target.id == '=') {
+            upperDisplay.value += ' '+ display.value + ' ' + '=';
+            storer.operator ='';
+        } else{
+            upperDisplay.value = `${storer.result}` + ' ' + e.target.id;
+            storer.operator = e.target.id;
+        }
+        display.value = storer.result;
+        storer.number1 = storer.result;
+        storer.number2 = '';
+    }
+
 }
+
+// Highlighting functions
 
 function highlightDigit(e){
     e.target.classList.add('digit-highlight');
@@ -111,7 +157,7 @@ function highlightDigit(e){
     })
 }
 
-function hightlightOperator(e){
+function highlightOperator(e){
     digits.forEach(i => {
         i.classList.remove('digit-highlight');
     })
