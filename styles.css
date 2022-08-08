@@ -29,7 +29,7 @@ button {
     float: left;
     width: 49%;
     aspect-ratio: 2.5/1;
-    font-weight: bold;
+    font-size: 36px;
 }
 
 #delete {
@@ -41,9 +41,9 @@ button {
 }
 form {
     border: solid grey 1px;
-    text-align: center;
+    text-align: right;
     max-width: 400px;
-    padding: 16px 0;
+    padding: 16px 4px;
     background-color: white;
     border-radius: 8px;
 }
@@ -53,7 +53,13 @@ input {
     text-align: right;
     border: none;
     margin: 6px 0;
-    max-width: 360px;
+    max-width: 390px;
+}
+
+#upper-display {
+    font-size: 18px;
+    color: grey;
+    width: 400px;
 }
 
 #button-container {

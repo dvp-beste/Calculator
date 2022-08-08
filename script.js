@@ -76,6 +76,9 @@ clearer.addEventListener('click', () => {
     operators.forEach(i => {
         i.disabled = false;
     })
+    digits.forEach(i => {
+        i.disabled = false;
+    })
     operators.forEach(i => {
         i.classList.remove('operator-highlight');
     })
@@ -126,6 +129,11 @@ function getNumbers(e) {
 
     decimal.disabled = display.value.includes('.') ? true: false;
     storer.lastClicked = e.target.classList;
+    if (display.value.length == 16) {
+        digits.forEach(i => {
+            i.disabled = true;
+        })
+    }
 }
 
 
@@ -134,6 +142,9 @@ operators.forEach(item => {
     item.addEventListener('click', (e) => {
         highlightOperator(e);
         decimal.disabled = false;
+        digits.forEach(i => {
+            i.disabled = false;
+        })
         while (parseFloat(display.value) == parseFloat(display.value.slice(0, -1))) {
             display.value = display.value.slice(0, -1);
         } 
