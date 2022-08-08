@@ -29,17 +29,18 @@ function operate(operator, num1, num2) {
     }
 }
 
+const buttons = document.querySelectorAll('button');
 const digits = document.querySelectorAll('.digit');
 const operators = document.querySelectorAll('.operator');
 const display = document.getElementById('display');
 const upperDisplay = document.getElementById('upper-display');
-const clearer = document.getElementById('C');
+const clearer = document.getElementById('Escape');
 const decimal = document.getElementById('.');
-const deleter = document.getElementById('delete');
+const deleter = document.getElementById('Backspace');
 let storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
 display.value = '0';
 
-// Clicking Delete button
+// Clicking Backspace button
 deleter.addEventListener('click', backSpace);
 
 function backSpace() {
@@ -87,6 +88,23 @@ clearer.addEventListener('click', () => {
     })
 })
 
+// Keyboard binding
+
+window.addEventListener('keydown',bindKeyboard);
+
+function bindKeyboard(e) {
+    let clickedKey = e.key;
+    clickedKey == 'Enter' ? clickedKey = '='
+    : clickedKey == 'Delete' ? clickedKey = 'Escape'
+    : clickedKey;
+    buttons.forEach(item => {
+        if(item.id == clickedKey) {
+            item.click();
+        }
+    })
+
+}
+
 // Event listener for digits, including decimal
 
 digits.forEach(item => {
@@ -103,7 +121,7 @@ function getNumbers(e) {
     if (storer.lastClicked != '' && storer.lastClicked.contains('operator')) {
         if (!storer.operator) {
             storer.number1 = '';
-        // if delete is clicked after an operator the display should not be 0. 
+        // if Backspace is clicked after an operator the display should not be 0. 
         } else if (!storer.number2) { 
             display.value = '0';
         }

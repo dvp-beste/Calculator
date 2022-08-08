@@ -24,19 +24,19 @@ button {
     border-radius: 8px;
 }
 
-#C,
-#delete {
+#Escape,
+#Backspace{
     float: left;
     width: 49%;
     aspect-ratio: 2.5/1;
     font-size: 36px;
 }
 
-#delete {
+#Backspace {
     background-color: rgb(203, 162, 241);
 }
 
-#C{
+#Escape{
     background-color: beige;
 }
 form {
