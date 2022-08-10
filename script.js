@@ -81,21 +81,21 @@ clearer.addEventListener('click', (e) => {
 
 // Keyboard binding
 
-window.addEventListener('keydown',bindKeyboard);
+// window.addEventListener('keydown',bindKeyboard);
  
-// input'a clicklemeyi engelle
-function bindKeyboard(e) {
-    let clickedKey = e.key;
-    clickedKey == 'Enter' ? clickedKey = '='
-    : clickedKey == 'Delete' ? clickedKey = 'Escape'
-    : clickedKey;
-    buttons.forEach(item => {
-        if(item.id == clickedKey) {
-            item.click();
-        }
-    })
+// // input'a clicklemeyi engelle
+// function bindKeyboard(e) {
+//     let clickedKey = e.key;
+//     clickedKey == 'Enter' ? clickedKey = '='
+//     : clickedKey == 'Delete' ? clickedKey = 'Escape'
+//     : clickedKey;
+//     buttons.forEach(item => {
+//         if(item.id == clickedKey) {
+//             item.click();
+//         }
+//     })
 
-}
+// }
 
 // Event listener for digits, including decimal
 
