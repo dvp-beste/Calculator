@@ -75,10 +75,6 @@ input {
     background-color: rgb(243, 164, 136);
 }
 
-.digit-highlight{
-    background-color: rgb(94, 157, 204);
-}
-
-.operator-highlight{
-    background-color: rgb(216, 105, 65);
+.highlight{
+    filter: brightness(130%);
 }

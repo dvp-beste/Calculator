@@ -43,11 +43,8 @@ display.value = '0';
 // Clicking Backspace button
 deleter.addEventListener('click', backSpace);
 
-function backSpace() {
-    buttons.forEach(i => {
-        i.classList.remove('digit-highlight', 'operator-highlight');
-    })
-
+function backSpace(e) {
+    removeHighlight(buttons);
     if (!upperDisplay.value) {  
         display.value = display.value.slice(0, -1); 
         if(display.value.length == 0) {
@@ -72,18 +69,14 @@ function backSpace() {
 }
 
 // Clicking 'C' and clearing all
-clearer.addEventListener('click', () => {
+clearer.addEventListener('click', (e) => {
+    removeHighlight(buttons);
     storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
     display.value = '0';
     upperDisplay.value = '';
-    
     buttons.forEach(i => {
         i.disabled = false;
     })
-    buttons.forEach(i => {
-        i.classList.remove('digit-highlight', 'operator-highlight');
-    })
-
 })
 
 // Keyboard binding
@@ -112,13 +105,9 @@ digits.forEach(item => {
 
 function getNumbers(e) {
     
-    highlightDigit(e);
-    operators.forEach(i => {
-        i.disabled = false;
-    })
-    deleter.disabled = false;
-    
-    
+    highlight(e);
+    enable(buttons);
+  
     // If no operator is clicked yet or the last clicked button was = sign, store the value in number1, else in number2
 
     if (!storer.operator) {
@@ -146,9 +135,9 @@ function getNumbers(e) {
         storer.number2 = display.value;
     }
     
-
     decimal.disabled = display.value.includes('.') ? true: false;
     storer.lastClicked = e.target.classList;
+
     if (display.value.length == 16) {
         digits.forEach(i => {
             i.disabled = true;
@@ -160,18 +149,18 @@ function getNumbers(e) {
 // Event listener for operators
 operators.forEach(item => {
     item.addEventListener('click', (e) => {
-        highlightOperator(e);
-        digits.forEach(i => {
-            i.disabled = false;
-        })
-        deleter.disabled = false;
+        highlight(e);
+        enable(buttons);
 
         if (!storer.lastClicked) {
             storer.number1 = '0';
         }
+
+        // If there is a decimal  or a 0 after the decimal without any numbers following them, erase them
         while (parseFloat(display.value) == parseFloat(display.value.slice(0, -1))) {
             display.value = display.value.slice(0, -1);
         } 
+
         // Check if storer.operator is empty OR two operators that are not '=' are clicked successively. If not call getResult
         if (!storer.operator || (storer.lastClicked.contains('operator') && e.target.id != '=')) {
             upperDisplay.value = display.value +' '+ e.target.id;
@@ -194,6 +183,7 @@ function getResult(e) {
     }
 
     storer.result = operate(storer.operator, parseFloat(storer.number1), parseFloat(storer.number2));
+
     if (isNaN(storer.result)) {
         upperDisplay.value = '';
         display.value = storer.result;
@@ -216,29 +206,25 @@ function getResult(e) {
 
 }
 
-// Highlighting functions
+// Highlighting and removing the hightlight
 
-function highlightDigit(e){
-    e.target.classList.add('digit-highlight');
-    digits.forEach(i => {
-        if (e.target.id !== i.id) {
-            i.classList.remove('digit-highlight');
-        }
+function highlight(e){
+    removeHighlight(buttons);
+    e.target.classList.add('highlight');
+}
+
+function removeHighlight(buttonList) {
+    buttonList.forEach(i => {
+        i.classList.remove('highlight');
     })
 }
 
-function highlightOperator(e){
-    digits.forEach(i => {
-        i.classList.remove('digit-highlight');
-    })
-    e.target.classList.add('operator-highlight');
-    operators.forEach(i => {
-        if (e.target.id !== i.id) {
-            i.classList.remove('operator-highlight');
-        }
+// Enabling buttons
+function enable(buttonList) {
+    buttonList.forEach(i => {
+        i.disabled = false;
     })
 }
-    
 
 
 
