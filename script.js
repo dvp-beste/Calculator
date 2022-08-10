@@ -44,28 +44,35 @@ display.value = '0';
 deleter.addEventListener('click', backSpace);
 
 function backSpace() {
-    
+    buttons.forEach(i => {
+        i.classList.remove('digit-highlight', 'operator-highlight');
+    })
+
     if (!upperDisplay.value) {  
         display.value = display.value.slice(0, -1); 
-        if(display.value.length == 0) {
+        if(display.value.length == 0 || display.value == '0') {
             display.value = '0';
             storer.number1 = '';
         } else {
             storer.number1 = display.value;
         }
-        
+        decimal.disabled = display.value.includes('.') ? true: false;
     } else if (upperDisplay.value && upperDisplay.value.includes('=')) {
         upperDisplay.value = '';
         storer.number1 = display.value;
+        deleter.disabled = true;
+        decimal.disabled = false;
     } else {
         display.value = display.value.slice(0, -1);
-        if(display.value.length == 0) {
+        if(display.value.length == 0 || display.value == '0') {
             display.value = '0';
             storer.number2 = '';
         } else {
             storer.number2 = display.value;
         }
+        decimal.disabled = display.value.includes('.') ? true: false;
     }
+    
 }
 
 // Clicking 'C' and clearing all
@@ -73,25 +80,21 @@ clearer.addEventListener('click', () => {
     storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
     display.value = '0';
     upperDisplay.value = '';
-    decimal.disabled = false;
-    operators.forEach(i => {
+    
+    buttons.forEach(i => {
         i.disabled = false;
     })
-    digits.forEach(i => {
-        i.disabled = false;
+    buttons.forEach(i => {
+        i.classList.remove('digit-highlight', 'operator-highlight');
     })
-    operators.forEach(i => {
-        i.classList.remove('operator-highlight');
-    })
-    digits.forEach(i => {
-        i.classList.remove('digit-highlight');
-    })
+
 })
 
 // Keyboard binding
 
 window.addEventListener('keydown',bindKeyboard);
-
+ 
+// input'a clicklemeyi engelle
 function bindKeyboard(e) {
     let clickedKey = e.key;
     clickedKey == 'Enter' ? clickedKey = '='
@@ -117,18 +120,17 @@ function getNumbers(e) {
     operators.forEach(i => {
         i.disabled = false;
     })
+    deleter.disabled = false;
     // if a number is clicked after a calculation it should be stored in storer.number1
     if (storer.lastClicked != '' && storer.lastClicked.contains('operator')) {
         if (!storer.operator) {
             storer.number1 = '';
-        // if Backspace is clicked after an operator the display should not be 0. 
-        } else if (!storer.number2) { 
             display.value = '0';
-        }
-        
+        }      
     }
 
     if (!storer.operator) {
+        display.value == '0' ? storer.number1 = '' : storer.number1;
         if (!storer.number1 && e.target.id != '.') {
         display.value = e.target.id;
         } else {
@@ -136,8 +138,13 @@ function getNumbers(e) {
         }
         storer.number1 = display.value;
     } else {
-        if (!storer.number2 && e.target.id != '.') {
-        display.value = e.target.id;
+        display.value == '0' ? storer.number2 = '' : storer.number2;
+        if (!storer.number2) {
+            if (e.target.id == '.') {
+                display.value = '0.';
+            } else {
+                display.value = e.target.id;
+            }
         } else {
         display.value += e.target.id;
         }
@@ -159,10 +166,14 @@ function getNumbers(e) {
 operators.forEach(item => {
     item.addEventListener('click', (e) => {
         highlightOperator(e);
-        decimal.disabled = false;
         digits.forEach(i => {
             i.disabled = false;
         })
+        deleter.disabled = false;
+
+        if (!storer.lastClicked) {
+            storer.number1 = '0';
+        }
         while (parseFloat(display.value) == parseFloat(display.value.slice(0, -1))) {
             display.value = display.value.slice(0, -1);
         } 
@@ -170,6 +181,9 @@ operators.forEach(item => {
         if (!storer.operator || (storer.lastClicked.contains('operator') && e.target.id != '=')) {
             upperDisplay.value = display.value +' '+ e.target.id;
             storer.operator = e.target.id;
+            if (e.target.id == '=') {
+                storer.operator = '';
+            }
         } else {
             getResult(e);
         }
@@ -229,7 +243,6 @@ function highlightOperator(e){
         }
     })
 }
-    
     
 
 
