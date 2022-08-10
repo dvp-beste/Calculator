@@ -50,12 +50,10 @@ function backSpace() {
 
     if (!upperDisplay.value) {  
         display.value = display.value.slice(0, -1); 
-        if(display.value.length == 0 || display.value == '0') {
+        if(display.value.length == 0) {
             display.value = '0';
-            storer.number1 = '';
-        } else {
-            storer.number1 = display.value;
-        }
+        } 
+        storer.number1 = display.value;
         decimal.disabled = display.value.includes('.') ? true: false;
     } else if (upperDisplay.value && upperDisplay.value.includes('=')) {
         upperDisplay.value = '';
@@ -64,12 +62,10 @@ function backSpace() {
         decimal.disabled = false;
     } else {
         display.value = display.value.slice(0, -1);
-        if(display.value.length == 0 || display.value == '0') {
+        if(display.value.length == 0) {
             display.value = '0';
-            storer.number2 = '';
-        } else {
-            storer.number2 = display.value;
         }
+        storer.number2 = display.value;
         decimal.disabled = display.value.includes('.') ? true: false;
     }
     
@@ -121,15 +117,14 @@ function getNumbers(e) {
         i.disabled = false;
     })
     deleter.disabled = false;
-    // if a number is clicked after a calculation it should be stored in storer.number1
-    if (storer.lastClicked != '' && storer.lastClicked.contains('operator')) {
-        if (!storer.operator) {
-            storer.number1 = '';
-            display.value = '0';
-        }      
-    }
+    
+    
+    // If no operator is clicked yet or the last clicked button was = sign, store the value in number1, else in number2
 
     if (!storer.operator) {
+        if (storer.lastClicked && storer.lastClicked.contains('operator')) {
+            display.value = '0';    
+        }
         display.value == '0' ? storer.number1 = '' : storer.number1;
         if (!storer.number1 && e.target.id != '.') {
         display.value = e.target.id;
