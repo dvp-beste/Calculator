@@ -85,7 +85,6 @@ clearer.addEventListener('click', (e) => {
 
 window.addEventListener('keydown',bindKeyboard);
  
-// input'a clicklemeyi engelle
 function bindKeyboard(e) {
     let clickedKey = e.key;
     clickedKey == 'Enter' ? clickedKey = '='
