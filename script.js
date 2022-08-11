@@ -39,6 +39,8 @@ const decimal = document.getElementById('.');
 const deleter = document.getElementById('Backspace');
 let storer = {number1: '' , number2: '', operator:'', result:'', lastClicked:''};
 display.value = '0';
+upperDisplay.disabled = true;
+display.disabled = true;
 
 // Clicking Backspace button
 deleter.addEventListener('click', backSpace);
@@ -81,21 +83,22 @@ clearer.addEventListener('click', (e) => {
 
 // Keyboard binding
 
-// window.addEventListener('keydown',bindKeyboard);
+window.addEventListener('keydown',bindKeyboard);
  
-// // input'a clicklemeyi engelle
-// function bindKeyboard(e) {
-//     let clickedKey = e.key;
-//     clickedKey == 'Enter' ? clickedKey = '='
-//     : clickedKey == 'Delete' ? clickedKey = 'Escape'
-//     : clickedKey;
-//     buttons.forEach(item => {
-//         if(item.id == clickedKey) {
-//             item.click();
-//         }
-//     })
+// input'a clicklemeyi engelle
+function bindKeyboard(e) {
+    let clickedKey = e.key;
+    clickedKey == 'Enter' ? clickedKey = '='
+    : clickedKey == 'Delete' ? clickedKey = 'Escape'
+    : clickedKey;
+    for (let item of buttons) {
+        if(item.id == clickedKey) {
+            item.click();
+            break;
+        }
+    }
 
-// }
+}
 
 // Event listener for digits, including decimal
 
@@ -112,7 +115,8 @@ function getNumbers(e) {
 
     if (!storer.operator) {
         if (storer.lastClicked && storer.lastClicked.contains('operator')) {
-            display.value = '0';    
+            display.value = '0';
+            upperDisplay.value = '';    
         }
         display.value == '0' ? storer.number1 = '' : storer.number1;
         if (!storer.number1 && e.target.id != '.') {

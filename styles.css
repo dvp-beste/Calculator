@@ -56,6 +56,11 @@ input {
     max-width: 390px;
 }
 
+input[type="text"]:disabled {
+    background: white;
+    color: black;
+  }
+
 #upper-display {
     font-size: 18px;
     color: grey;
@@ -78,3 +83,4 @@ input {
 .highlight{
     filter: brightness(130%);
 }
+
