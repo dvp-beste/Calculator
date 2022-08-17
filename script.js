@@ -90,6 +90,8 @@ function bindKeyboard(e) {
         equal.click();
     } else if (e.key === 'Delete' || e.key === 'Escape') {
         clearer.click();
+    } else if (e.key === ',') {
+        decimal.click();
     } else{
         for (let item of buttons) {
             if(item.id === e.key) {
@@ -112,7 +114,7 @@ function getNumbers(e) {
     enable(buttons);
 
     if (!storer.operator || storer.operator === '=') {
-        if (storer.lastClicked && storer.lastClicked.contains('operator')) {
+        if (storer.operator === '=' && storer.lastClicked.contains('operator')) {
             display.value = '0';
             upperDisplay.value = '';    
         }
@@ -156,7 +158,12 @@ operators.forEach(item => {
             storer.number1 = '0';
         }
 
-        // Check if storer.operator is empty OR the last clicked operator was '=' OR two operators that are not '=' are clicked successively. If not call getResult
+        /*
+            Check if storer.operator is empty 
+            OR the last clicked operator was '=' 
+            OR two operators that are not '=' are clicked successively. 
+            If not call getResult 
+        */
         if (!storer.operator || storer.operator === '=' || (storer.lastClicked.contains('operator') && e.target.id != '=')) {
             upperDisplay.value = storer.number1 +' '+ e.target.id;
             storer.operator = e.target.id;
